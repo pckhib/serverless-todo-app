@@ -1,5 +1,5 @@
 service:
-  name: serverless-todo-app
+  name: sls-todo
 
 plugins:
   - serverless-webpack
@@ -7,7 +7,7 @@ plugins:
 
 provider:
   name: aws
-  runtime: nodejs8.10
+  runtime: nodejs12.x
 
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'eu-central-1'}
@@ -15,7 +15,7 @@ provider:
   environment:
     TODOS_TABLE: Todos-${self:provider.stage}
     TODO_INDEX: TodoIndex
-    IMAGES_S3_BUCKET: serverless-todo-images-${self:provider.stage}
+    IMAGES_S3_BUCKET: sls-todo-images-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 3000
 
 functions:
