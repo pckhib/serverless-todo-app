@@ -39,6 +39,10 @@ export async function deleteTodo(todoId: string, userId: string) {
   await todosAccess.deleteTodo(todoId, userId);
 }
 
-export function generateUploadUrl(todoId: string) {
-  return todosAccess.generateUploadUrl(todoId);
+export async function generateUploadUrl(todoId: string, userId: string) {
+  const uploadUrl = todosAccess.generateUploadUrl(todoId);
+
+  await todosAccess.addAttachmentUrl(todoId, userId);
+
+  return uploadUrl;
 }

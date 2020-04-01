@@ -49,7 +49,10 @@ export class TodosAccess {
         todoId: todoId,
         userId: userId
       },
-      UpdateExpression: 'set name = :name, dueDate = :dueDate, done = :done',
+      UpdateExpression: 'set #name = :name, dueDate = :dueDate, done = :done',
+      ExpressionAttributeNames: {
+          '#name': 'name'
+      },
       ExpressionAttributeValues: {
         ':name': todoUpdate.name,
         ':dueDate': todoUpdate.dueDate,
@@ -66,6 +69,25 @@ export class TodosAccess {
       Key: {
         todoId: todoId,
         userId: userId
+      }
+    }).promise();
+  }
+
+  async addAttachmentUrl(todoId: string, userId: string) {
+    const attachmentUrl = `https://${this.s3Bucket}.s3.amazonaws.com/${todoId}`;
+
+    await this.docClient.update({
+      TableName: this.todosTable,
+      Key: {
+        todoId: todoId,
+        userId: userId
+      },
+      UpdateExpression: 'set #attachmentUrl = :attachmentUrl',
+      ExpressionAttributeNames: {
+        '#attachmentUrl': 'attachmentUrl'
+      },
+      ExpressionAttributeValues: {
+        ':attachmentUrl': attachmentUrl
       }
     }).promise();
   }
