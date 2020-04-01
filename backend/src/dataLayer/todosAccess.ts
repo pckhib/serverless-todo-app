@@ -5,6 +5,7 @@ const XAWS = AWSXRay.captureAWS(AWS);
 
 import { TodoItem } from '../models/TodoItem';
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
+import { TodoUpdate } from '../models/TodoUpdate';
 
 export class TodosAccess {
 
@@ -37,6 +38,24 @@ export class TodosAccess {
     }).promise();
 
     return todoItem;
+  }
+
+  async updateTodo(todoId: string, todoUpdate: TodoUpdate, userId: string): Promise<TodoUpdate> {
+    await this.docClient.update({
+      TableName: this.todosTable,
+      Key: {
+        todoId: todoId,
+        userId: userId
+      },
+      UpdateExpression: 'set name = :name, dueDate = :dueDate, done = :done',
+      ExpressionAttributeValues: {
+        ':name': todoUpdate.name,
+        ':dueDate': todoUpdate.dueDate,
+        ':done' : todoUpdate.done
+      }
+    }).promise();
+
+    return todoUpdate;
   }
 }
 
