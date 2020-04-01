@@ -38,3 +38,7 @@ export async function updateTodo(todoId: string, updateTodoRequest: UpdateTodoRe
 export async function deleteTodo(todoId: string, userId: string) {
   await todosAccess.deleteTodo(todoId, userId);
 }
+
+export function generateUploadUrl(todoId: string) {
+  return todosAccess.generateUploadUrl(todoId);
+}

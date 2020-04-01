@@ -12,7 +12,9 @@ export class TodosAccess {
   constructor(
     private readonly docClient: DocumentClient = createDynamoDBClient(),
     private readonly todosTable = process.env.TODOS_TABLE,
-    private readonly todoIndex = process.env.TODO_INDEX
+    private readonly todoIndex = process.env.TODO_INDEX,
+    private readonly s3Bucket = process.env.IMAGES_S3_BUCKET,
+    private readonly urlExpiration = process.env.SIGNED_URL_EXPIRATION
   ) {}
 
   async getAllTodos(userId: string): Promise<TodoItem[]> {
@@ -66,6 +68,18 @@ export class TodosAccess {
         userId: userId
       }
     }).promise();
+  }
+
+  generateUploadUrl(todoId: string): string {
+    const s3 = new AWS.S3({
+      signatureVersion: 'v4'
+    });
+
+    return s3.getSignedUrl('putObject', {
+      Bucket: this.s3Bucket,
+      Key: todoId,
+      Expires: this.urlExpiration
+    });
   }
 }
 
