@@ -6,6 +6,7 @@ const XAWS = AWSXRay.captureAWS(AWS);
 import { TodoItem } from '../models/TodoItem';
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 import { TodoUpdate } from '../models/TodoUpdate';
+import { createLogger } from '../utils/logger';
 
 export class TodosAccess {
 
@@ -15,11 +16,12 @@ export class TodosAccess {
     private readonly todosTable = process.env.TODOS_TABLE,
     private readonly todoIndex = process.env.TODO_INDEX,
     private readonly s3Bucket = process.env.IMAGES_S3_BUCKET,
-    private readonly urlExpiration = process.env.SIGNED_URL_EXPIRATION
+    private readonly urlExpiration = process.env.SIGNED_URL_EXPIRATION,
+    private readonly logger = createLogger('todosAccess')
   ) {}
 
   async getAllTodos(userId: string): Promise<TodoItem[]> {
-    console.log('Getting all todos for user ', userId);
+    this.logger.info('Getting all todos for user', userId);
 
     const result = await this.docClient.query({
       TableName: this.todosTable,

@@ -5,8 +5,12 @@ import * as middy from 'middy';
 import { cors } from 'middy/middlewares';
 import { deleteTodo } from '../../businessLogic/todos';
 import { getUserId } from '../utils';
+import { createLogger } from '../../utils/logger';
+
+const logger = createLogger('deleteTodo');
 
 export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+  logger.info('Processing event', event);
   const todoId = event.pathParameters.todoId;
   const userId = getUserId(event);
 

@@ -4,8 +4,10 @@ import { TodoItem } from "../models/TodoItem";
 import { CreateTodoRequest } from "../requests/CreateTodoRequest";
 import { TodoUpdate } from '../models/TodoUpdate';
 import { UpdateTodoRequest } from '../requests/UpdateTodoRequest';
+import { createLogger } from '../utils/logger';
 
 const todosAccess = new TodosAccess();
+const logger = createLogger('todos');
 
 export async function getAllTodos(userId: string): Promise<TodoItem[]> {
   return todosAccess.getAllTodos(userId);
@@ -42,6 +44,7 @@ export async function deleteTodo(todoId: string, userId: string) {
 export async function generateUploadUrl(todoId: string, userId: string) {
   const uploadUrl = todosAccess.generateUploadUrl(todoId);
 
+  logger.info('Add attachmentUrl to todo', todoId);
   await todosAccess.addAttachmentUrl(todoId, userId);
 
   return uploadUrl;
