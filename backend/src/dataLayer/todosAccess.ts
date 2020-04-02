@@ -11,6 +11,7 @@ export class TodosAccess {
 
   constructor(
     private readonly docClient: DocumentClient = createDynamoDBClient(),
+    private readonly s3 = new XAWS.S3({signatureVersion: 'v4'}),
     private readonly todosTable = process.env.TODOS_TABLE,
     private readonly todoIndex = process.env.TODO_INDEX,
     private readonly s3Bucket = process.env.IMAGES_S3_BUCKET,
@@ -93,11 +94,7 @@ export class TodosAccess {
   }
 
   generateUploadUrl(todoId: string): string {
-    const s3 = new AWS.S3({
-      signatureVersion: 'v4'
-    });
-
-    return s3.getSignedUrl('putObject', {
+    return this.s3.getSignedUrl('putObject', {
       Bucket: this.s3Bucket,
       Key: todoId,
       Expires: this.urlExpiration
